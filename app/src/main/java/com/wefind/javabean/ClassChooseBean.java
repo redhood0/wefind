@@ -1,15 +1,20 @@
 package com.wefind.javabean;
 
-public class ClassChooseBean {
+import java.io.Serializable;
+
+public class ClassChooseBean implements Serializable {
     private String className = "";
     private String typeCode = "0";
+    private boolean isSelected;
 
     public ClassChooseBean() {
     }
 
+
     public ClassChooseBean(String className, String typeCode) {
         this.className = className;
         this.typeCode = typeCode;
+        isSelected = false;
     }
 
     public String getClassName() {
@@ -27,4 +32,13 @@ public class ClassChooseBean {
     public void setTypeCode(String typeCode) {
         this.typeCode = typeCode;
     }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
 }

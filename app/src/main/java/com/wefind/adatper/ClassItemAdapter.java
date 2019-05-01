@@ -1,6 +1,7 @@
 package com.wefind.adatper;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +9,13 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.wefind.R;
+import com.wefind.activity.ClassChooseActivity;
 import com.wefind.javabean.ClassChooseBean;
 
 
 import java.util.List;
+
+import androidx.core.content.ContextCompat;
 
 public class ClassItemAdapter extends ArrayAdapter<ClassChooseBean> {
     private int resourceId;
@@ -36,8 +40,13 @@ public class ClassItemAdapter extends ArrayAdapter<ClassChooseBean> {
 
         View classView = LayoutInflater.from(getContext()).inflate(resourceId, null);
 
-        TextView tv_classChoose = (TextView) classView.findViewById(R.id.className);
+        TextView tv_classChoose = (TextView) classView.findViewById(R.id.tv_className);
         tv_classChoose.setText(item.getClassName().toString());
+        //set selector color
+        if(item.isSelected()){
+            tv_classChoose.setTextColor(ContextCompat.getColor(getContext(),R.color.item_selector_orange));
+        }
         return classView;
     }
+
 }

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
@@ -16,6 +17,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.wefind.BaseActivity;
 import com.wefind.R;
+import com.wefind.javabean.ClassChooseBean;
 
 import java.io.File;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 public class LoserActivity extends BaseActivity {
     public static final int CLASSCHOOSE_CODE = 1024;
@@ -31,6 +34,7 @@ public class LoserActivity extends BaseActivity {
     ImageView iv_img4show;
     LinearLayout layout_takePhote;
     ConstraintLayout consLayout_classChoose;
+    TextView tv_classChoose;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,6 +53,7 @@ public class LoserActivity extends BaseActivity {
         btn_choosePhote = findViewById(R.id.btn_choosePhote);
         layout_takePhote = findViewById(R.id.layout_takePhote);
         consLayout_classChoose = findViewById(R.id.consLayout_classChoose);
+        tv_classChoose = findViewById(R.id.tv_classChoose);
         //点击事件
         layout_takePhote.setOnClickListener(n -> startAlbum());
         consLayout_classChoose.setOnClickListener(n -> jumpToClassChoose());
@@ -96,12 +101,21 @@ public class LoserActivity extends BaseActivity {
     // 跳转类型选择页面
     public void jumpToClassChoose(){
         Intent intent = new Intent(LoserActivity.this,ClassChooseActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent,CLASSCHOOSE_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        //classChoose result
+        if(requestCode == CLASSCHOOSE_CODE && resultCode == ClassChooseActivity.RESULT_CODE){
+            ClassChooseBean classChooseBean = (ClassChooseBean)data.getSerializableExtra("classChooseBean");
+                Log.d("AAAAA-", classChooseBean.getClassName()+ "-" + classChooseBean.isSelected() + "-" + classChooseBean.getTypeCode());
+            tv_classChoose.setText(classChooseBean.getClassName());
+            tv_classChoose.setTextColor(ContextCompat.getColor(this,R.color.black));
+        }
+        //photo pick result
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case PictureConfig.CHOOSE_REQUEST:
@@ -111,12 +125,12 @@ public class LoserActivity extends BaseActivity {
                     // 2.media.getCutPath();为裁剪后path，
                     // 3.media.getCompressPath();为压缩后path
                     // 如果裁剪并压缩了，以取压缩路径为准，因为是先裁剪后压缩的
-//                    adapter.setList(selectList);
-//                    adapter.notifyDataSetChanged();
+                    //TODO:delete log
                     Log.d("TAG-path", "onActivityResult: " + selectList.get(0).getCutPath());
                     Log.d("TAG-path", "==" + new File(selectList.get(0).getCompressPath()).length());
                     iv_img4show.setImageIcon(Icon.createWithContentUri(selectList.get(0).getCompressPath()));
                     break;
+
             }
         }
     }

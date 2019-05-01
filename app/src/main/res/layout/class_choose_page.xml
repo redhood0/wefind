@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:divider="@null"
         android:transcriptMode="alwaysScroll"
+        android:choiceMode="singleChoice"
         app:layout_constraintLeft_toLeftOf="@+id/titleBar"
         app:layout_constraintTop_toBottomOf="@+id/titleBar">
 

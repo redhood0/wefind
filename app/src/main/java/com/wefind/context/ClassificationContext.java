@@ -10,9 +10,9 @@ import java.util.Arrays;
 //动物:30（公1母2）
 //物品（日用品，证件，贵重物品，电子产品，图书，服装鞋帽，纪念品）
 public class ClassificationContext {
-    public static final ArrayList<ClassChooseBean> classList = new ArrayList<>();
 
     public static ArrayList<ClassChooseBean> setAndGetClassList(){
+        ArrayList<ClassChooseBean> classList = new ArrayList<>();
         ClassChooseBean item1 = new ClassChooseBean("电子产品","50");
         ClassChooseBean item2 = new ClassChooseBean("日用品","51");
         ClassChooseBean item3 = new ClassChooseBean("证件","52");
@@ -25,6 +25,7 @@ public class ClassificationContext {
         ClassChooseBean item10 = new ClassChooseBean("寻人","0");
 
         classList.addAll(Arrays.asList(item1,item2,item3,item4,item5,item6,item7,item8,item9,item10));
+
         return classList;
     }
 }
