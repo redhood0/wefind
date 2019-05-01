@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 
 public class ClassItemAdapter extends ArrayAdapter<ClassChooseBean> {
     private int resourceId;
+
     /**
      * Constructor
      *
@@ -43,10 +44,9 @@ public class ClassItemAdapter extends ArrayAdapter<ClassChooseBean> {
         TextView tv_classChoose = (TextView) classView.findViewById(R.id.tv_className);
         tv_classChoose.setText(item.getClassName().toString());
         //set selector color
-        if(item.isSelected()){
-            tv_classChoose.setTextColor(ContextCompat.getColor(getContext(),R.color.item_selector_orange));
+        if (item.isSelected()) {
+            tv_classChoose.setTextColor(ContextCompat.getColor(getContext(), R.color.item_selector_orange));
         }
         return classView;
     }
-
 }

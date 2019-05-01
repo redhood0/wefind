@@ -42,6 +42,9 @@
         <activity
             android:name=".activity.ClassChooseActivity"
             android:launchMode="singleTop"></activity>
+        <activity
+            android:name=".activity.SearchResultActivity"
+            android:launchMode="singleTop"></activity>
     </application>
     <!--权限获取-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

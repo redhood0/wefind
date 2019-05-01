@@ -35,8 +35,6 @@ public class ImageUtil {
                     .compressToFile(oldfile);
             newFile.renameTo(oldfile);
         }else{
-            // newFile = CompressHelper.getDefault(activity).compressToFile(oldfile);
-            //Log.i("Compress","start press");
             newFile = new CompressHelper.Builder(activity)
                     .setMaxWidth(imgWidth)  // 默认最大宽度为720
                     .setMaxHeight(imgHeight) // 默认最大高度为960
@@ -47,7 +45,6 @@ public class ImageUtil {
                     .build()
                     .compressToFile(oldfile);
             newFile.renameTo(oldfile);
-            //Log.i("Compress","finish press");
         }
         return newFile;
     }

@@ -39,5 +39,6 @@ dependencies {
     implementation 'com.qmuiteam:qmui:1.2.0'//QmUi
     implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'//photo pick
     implementation 'com.hjq:titlebar:5.0' //title Bar
+    implementation 'com.alibaba:fastjson:1.1.71.android' //fastjson
 
 }

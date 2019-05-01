@@ -17,7 +17,6 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //QMUIStatusBarHelper.translucent(this);沉浸式状态烂
         super.onCreate(savedInstanceState);
 //        try {
 //            Thread.sleep(1800);

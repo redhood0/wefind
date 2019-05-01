@@ -19,13 +19,11 @@
         android:id="@+id/lv_class"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:choiceMode="singleChoice"
         android:divider="@null"
         android:transcriptMode="alwaysScroll"
-        android:choiceMode="singleChoice"
         app:layout_constraintLeft_toLeftOf="@+id/titleBar"
         app:layout_constraintTop_toBottomOf="@+id/titleBar">
-
     </ListView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

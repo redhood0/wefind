@@ -3,39 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-<!--
-    <LinearLayout
+
+    <TextView
+        android:id="@+id/tv_className"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        android:text="手机"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:transitionName="phone" />
 
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="60dp"
-            android:background="@color/black"
-            />
--->
-        <TextView
-            android:id="@+id/tv_className"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center_vertical"
-            android:text="手机"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:layout_marginLeft="20dp"
-            android:transitionName="phone" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/selector_gray"
-            android:layout_marginLeft="18dp"
-            android:layout_marginRight="18dp"
-            />
-
-    <!--</LinearLayout>-->
-
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:background="@color/selector_gray" />
 
 </LinearLayout>

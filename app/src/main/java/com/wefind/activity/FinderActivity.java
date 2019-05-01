@@ -58,7 +58,7 @@ public class FinderActivity extends BaseActivity {
         btn_choosePhote = findViewById(R.id.btn_choosePhote);
         btn_update = findViewById(R.id.btn_update);
         iv_img4show = findViewById(R.id.iv_img4show);
-       // tv_result = findViewById(R.id.tv_result);
+        // tv_result = findViewById(R.id.tv_result);
         et_lostName = findViewById(R.id.et_lostName);
         et_lostDescribe = findViewById(R.id.et_lostDescribe);
         //设置点击事件
@@ -66,47 +66,49 @@ public class FinderActivity extends BaseActivity {
         btn_takePhoto.setOnClickListener(n -> {
             getPermission();
             CameraUtil cameraUtil = new CameraUtil();
-            cameraUtil.dispatchTakePictureIntent(this,"com.wefind");
+            cameraUtil.dispatchTakePictureIntent(this, "com.wefind");
         });
         //上传事件（获取图片资源和描述，上传ai服务器和数据库）
         btn_update.setOnClickListener(n -> {
             //TODO:进行非空判断
-            if(iv_img4show.getDrawable() == null){
+            if (iv_img4show.getDrawable() == null) {
                 Toast.makeText(this, "上传图片不能为空", Toast.LENGTH_SHORT).show();
                 return;
             }
             String str_lostName = et_lostName.getText().toString();
             String str_lostDescribe = et_lostDescribe.getText().toString();
-                new Thread(){
-                    @Override
-                    public void run(){
-                        try {
-                            FinderController.uploadPic(str_lostName,str_lostDescribe,CameraUtil.currentPhotoPath);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        FinderController.uploadPic(str_lostName, str_lostDescribe, CameraUtil.currentPhotoPath);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }.start();
+                }
+            }.start();
         });
 
     }
+
     //获取权限
-    public void getPermission(){
+    public void getPermission() {
         rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean granted) throws Exception {
                         if (granted) { // Always true pre-M
                             // I can control the camera now
-                            Log.i("PERMISSION","get permission success!");
+                            Log.i("PERMISSION", "get permission success!");
                         } else {
-                            Log.i("PERMISSION","get permission fale");
+                            Log.i("PERMISSION", "get permission fale");
                             //Toast.makeText(getApplicationContext(),"拒绝将无法使用相机进行拍照",Toast.LENGTH_LONG).show();
                         }
                     }
                 });
     }
-//接受照相机返回的值
+
+    //接受照相机返回的值
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         CameraUtil cameraUtil = new CameraUtil();

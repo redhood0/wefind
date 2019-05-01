@@ -3,13 +3,14 @@ package com.wefind.activity;
 import android.content.Intent;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
-import android.os.Environment;
-
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
@@ -18,6 +19,11 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.wefind.BaseActivity;
 import com.wefind.R;
 import com.wefind.javabean.ClassChooseBean;
+import com.wefind.javabean.SearchResultRootBean;
+import com.wefind.utils.AiLikePicUtil;
+
+import org.json.JSONException;
+import org.reactivestreams.Subscriber;
 
 import java.io.File;
 import java.util.List;
@@ -26,15 +32,27 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.Subject;
 
 public class LoserActivity extends BaseActivity {
     public static final int CLASSCHOOSE_CODE = 1024;
 
     Button btn_choosePhote;
+    Button btn_search;
     ImageView iv_img4show;
     LinearLayout layout_takePhote;
     ConstraintLayout consLayout_classChoose;
     TextView tv_classChoose;
+    EditText et_lostName;
+    EditText et_lostDescribe;
+    private String imageCompressFilePath;
+    private  ClassChooseBean classChooseBean;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,9 +72,13 @@ public class LoserActivity extends BaseActivity {
         layout_takePhote = findViewById(R.id.layout_takePhote);
         consLayout_classChoose = findViewById(R.id.consLayout_classChoose);
         tv_classChoose = findViewById(R.id.tv_classChoose);
+        btn_search = findViewById(R.id.btn_search);
+        et_lostName = findViewById(R.id.et_lostName);
+        et_lostDescribe = findViewById(R.id.et_lostDescribe);
         //点击事件
         layout_takePhote.setOnClickListener(n -> startAlbum());
         consLayout_classChoose.setOnClickListener(n -> jumpToClassChoose());
+        btn_search.setOnClickListener(n -> searchLostThing());
     }
 
     // 进入相册
@@ -80,7 +102,7 @@ public class LoserActivity extends BaseActivity {
                 .withAspectRatio(1, 1)// int 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
                 .hideBottomControls(true)// 是否显示uCrop工具栏，默认不显示 true or false
                 .isGif(false)// 是否显示gif图片 true or false
-                .compressSavePath("/CustoPath/Compress")//压缩图片保存地址
+                //.compressSavePath()//压缩图片保存地址
                 .freeStyleCropEnabled(true)// 裁剪框是否可拖拽 true or false
                 .circleDimmedLayer(false)// 是否圆形裁剪 true or false
                 .showCropFrame(true)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false   true or false
@@ -99,9 +121,47 @@ public class LoserActivity extends BaseActivity {
     }
 
     // 跳转类型选择页面
-    public void jumpToClassChoose(){
-        Intent intent = new Intent(LoserActivity.this,ClassChooseActivity.class);
-        startActivityForResult(intent,CLASSCHOOSE_CODE);
+    public void jumpToClassChoose() {
+        Intent intent = new Intent(LoserActivity.this, ClassChooseActivity.class);
+        startActivityForResult(intent, CLASSCHOOSE_CODE);
+    }
+    //传输信息至远端，进行信息匹配
+    //TODO:显示匹配图片和对方
+    public void searchLostThing(){
+        //获取照片
+        String imgPath = imageCompressFilePath;
+        //获取名称
+        String name = et_lostName.getText().toString();
+        //获取描述
+        String describe = et_lostDescribe.getText().toString();
+
+        //非空判断
+        if(TextUtils.isEmpty(imgPath)){
+            Toast.makeText(this, "照片不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }else if(TextUtils.isEmpty(name)){
+            Toast.makeText(this, "名称不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }else if(classChooseBean == null || TextUtils.isEmpty(classChooseBean.getTypeCode())){
+            Toast.makeText(this, "类型不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //获取分类
+        String typeCode= classChooseBean.getTypeCode();
+
+        //获取的数据进行传递至ai服务器和个人数据库（异步操作）
+        Observable.create(e -> e.onNext(AiLikePicUtil.selectPic(typeCode,imgPath)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(n -> {
+                    //SearchResultRootBean bean = (SearchResultRootBean)n;
+                    Log.d("JSON!", "searchLostThing: "+ n.toString());
+                    //界面跳转
+                    Intent intent = new Intent(LoserActivity.this,SearchResultActivity.class);
+                    intent.putExtra("jsonStr",n.toString());
+                    startActivity(intent);
+                });
+
     }
 
     @Override
@@ -109,11 +169,11 @@ public class LoserActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         //classChoose result
-        if(requestCode == CLASSCHOOSE_CODE && resultCode == ClassChooseActivity.RESULT_CODE){
-            ClassChooseBean classChooseBean = (ClassChooseBean)data.getSerializableExtra("classChooseBean");
-                Log.d("AAAAA-", classChooseBean.getClassName()+ "-" + classChooseBean.isSelected() + "-" + classChooseBean.getTypeCode());
+        if (requestCode == CLASSCHOOSE_CODE && resultCode == ClassChooseActivity.RESULT_CODE) {
+           classChooseBean = (ClassChooseBean) data.getSerializableExtra("classChooseBean");
+            //Log.d("AAAAA-", classChooseBean.getClassName() + "-" + classChooseBean.isSelected() + "-" + classChooseBean.getTypeCode());
             tv_classChoose.setText(classChooseBean.getClassName());
-            tv_classChoose.setTextColor(ContextCompat.getColor(this,R.color.black));
+            tv_classChoose.setTextColor(ContextCompat.getColor(this, R.color.black));
         }
         //photo pick result
         if (resultCode == RESULT_OK) {
@@ -126,14 +186,13 @@ public class LoserActivity extends BaseActivity {
                     // 3.media.getCompressPath();为压缩后path
                     // 如果裁剪并压缩了，以取压缩路径为准，因为是先裁剪后压缩的
                     //TODO:delete log
-                    Log.d("TAG-path", "onActivityResult: " + selectList.get(0).getCutPath());
-                    Log.d("TAG-path", "==" + new File(selectList.get(0).getCompressPath()).length());
+                    Log.d("TAG-path", "getCutPath(): " + selectList.get(0).getCutPath());
+                    Log.d("TAG-path", "getCompressPath()" + new File(selectList.get(0).getCompressPath()));
+                    Log.d("TAG-path", "getCompressSize" + new File(selectList.get(0).getCompressPath()).length());
                     iv_img4show.setImageIcon(Icon.createWithContentUri(selectList.get(0).getCompressPath()));
+                    imageCompressFilePath = selectList.get(0).getCompressPath();
                     break;
-
             }
         }
     }
-
-
 }

@@ -10,7 +10,6 @@ public class ClassChooseBean implements Serializable {
     public ClassChooseBean() {
     }
 
-
     public ClassChooseBean(String className, String typeCode) {
         this.className = className;
         this.typeCode = typeCode;
@@ -40,5 +39,4 @@ public class ClassChooseBean implements Serializable {
     public void setSelected(boolean selected) {
         isSelected = selected;
     }
-
 }
