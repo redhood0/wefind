@@ -37,6 +37,7 @@ dependencies {
     implementation 'com.github.nanchen2251:CompressHelper:1.0.5'//图片压缩相关工具包
     implementation 'com.baidu.aip:java-sdk:4.11.0'//百度ai相关工具包
     implementation 'com.qmuiteam:qmui:1.2.0'//QmUi
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'//pic pick
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'//photo pick
+    implementation 'com.hjq:titlebar:5.0' //title Bar
 
 }

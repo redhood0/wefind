@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
-    >
-<!--
-    <Button
-        android:id="@+id/btn_choosePhote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="52dp"
-        android:layout_marginTop="20dp"
-        android:text="从相册中选择"
+    android:background="#F8F8F8">
+
+    <com.hjq.bar.TitleBar
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />-->
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="查找失物"
+        app:titleSize="18sp"></com.hjq.bar.TitleBar>
+    <!--
+        <Button
+            android:id="@+id/btn_choosePhote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="52dp"
+            android:layout_marginTop="20dp"
+            android:text="从相册中选择"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />-->
 
     <LinearLayout
         android:id="@+id/layout_takePhote"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:orientation="vertical"
+        android:layout_height="120dp"
+        android:background="#ffffff"
         android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toBottomOf="@+id/titleBar">
 
         <ImageView
             android:layout_width="40dp"
@@ -37,62 +47,155 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="添加照片"
-            android:textColor="#CACACA" />
+            android:textColor="#A2A2A2" />
 
     </LinearLayout>
-
-    <LinearLayout
+    <!-- gray line -->
+    <ImageView
+        android:id="@+id/iv_grayline1"
         android:layout_width="match_parent"
-        android:layout_height="12dp"
+        android:layout_height="10dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/layout_takePhote"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:background="#F8F8F8"
-        >
-    </LinearLayout>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_takePhote"></ImageView>
 
     <ImageView
         android:id="@+id/iv_img4show"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="252dp"
-        android:background="#C1C1C5"
-        app:layout_constraintHorizontal_bias="0.498"
+        android:layout_marginTop="52dp"
+        android:background="#F4F4F5"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/et_lostName"
-        android:layout_width="300sp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="376dp"
-        android:hint="物品简述（可以为空）"
-        app:layout_constraintHorizontal_bias="0.498"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:background="#ffffff"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <!--
+        app:layout_constraintTop_toBottomOf="@+id/iv_grayline1">
+
+        <EditText
+            android:id="@+id/et_lostName"
+            android:layout_width="300sp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/white"
+            android:hint="失物名称 品牌型号不可少"
+            android:lines="1"
+            android:maxLength="25"
+            android:textSize="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <EditText
             android:id="@+id/et_lostDescribe"
             android:layout_width="300sp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="424dp"
-            android:hint="遗失地点"
-            app:layout_constraintHorizontal_bias="0.495"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="6dp"
+            android:background="@color/white"
+            android:gravity="top"
+            android:hint="这里详细描述一下遗失物品的细节\n比如物品的外观特征、品牌型号、遗失地点、遗失时间等具体信息会加快搜寻进度哦~"
+            android:maxLength="120"
+            android:maxLines="5"
+            android:textSize="15dp"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_lostName" />
+
+        <ImageView
+            android:id="@+id/iv_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:src="@mipmap/icon_location"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@+id/et_lostDescribe" />
+
+        <TextView
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="19dp"
+            android:text="南京工业职业技术学院一食堂..."
+            android:textColor="#000000"
+            android:textSize="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/iv_location" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- gray line -->
+    <ImageView
+        android:id="@+id/iv_grayline2"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_marginBottom="8dp"
+        android:background="#F8F8F8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ConstraintLayout"></ImageView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/consLayout_classChoose"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+
+        android:background="@drawable/selector"
+        android:clickable="true"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_grayline2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="分类"
+            android:textColor="#000000"
+            android:textSize="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_classChoose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="40dp"
+            android:text="选择分类"
+            android:textColor="#A2A2A2"
+            android:textSize="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    -->
 
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginRight="20dp"
+            android:src="@mipmap/icon_right"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--#E74629-->
     <Button
         android:id="@+id/btn_update"
-        android:layout_width="match_parent"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="428dp"
+        android:layout_marginTop="584dp"
+        android:background="#E74629"
         android:text="查找"
         android:textColor="#ffffff"
-        android:background="#E74629"
+        android:textSize="20sp"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

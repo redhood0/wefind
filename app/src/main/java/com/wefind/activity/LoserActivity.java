@@ -22,12 +22,15 @@ import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class LoserActivity extends BaseActivity {
+    public static final int CLASSCHOOSE_CODE = 1024;
 
     Button btn_choosePhote;
     ImageView iv_img4show;
     LinearLayout layout_takePhote;
+    ConstraintLayout consLayout_classChoose;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,10 +48,10 @@ public class LoserActivity extends BaseActivity {
         iv_img4show = findViewById(R.id.iv_img4show);
         btn_choosePhote = findViewById(R.id.btn_choosePhote);
         layout_takePhote = findViewById(R.id.layout_takePhote);
+        consLayout_classChoose = findViewById(R.id.consLayout_classChoose);
         //点击事件
-        layout_takePhote.setOnClickListener(n -> {
-            startAlbum();
-        });
+        layout_takePhote.setOnClickListener(n -> startAlbum());
+        consLayout_classChoose.setOnClickListener(n -> jumpToClassChoose());
     }
 
     // 进入相册
@@ -90,6 +93,12 @@ public class LoserActivity extends BaseActivity {
                 .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
     }
 
+    // 跳转类型选择页面
+    public void jumpToClassChoose(){
+        Intent intent = new Intent(LoserActivity.this,ClassChooseActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -111,4 +120,6 @@ public class LoserActivity extends BaseActivity {
             }
         }
     }
+
+
 }
