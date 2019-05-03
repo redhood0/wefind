@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="#F3F5F6">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/consLayout_classChoose"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/iv_lostPic"
+                android:layout_width="170dp"
+                android:layout_height="170dp"
+                android:layout_margin="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/dogicon"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:riv_border_color="#333333"
+                app:riv_border_width="0dip"
+                app:riv_corner_radius="6dip"
+                app:riv_mutate_background="true"
+                app:riv_oval="false" />
+
+            <TextView
+                android:id="@+id/tv_thing_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:ellipsize="end"
+                android:lines="2"
+                android:maxLines="2"
+                android:minLines="2"
+                android:text="物品名称:\n"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toRightOf="@+id/iv_lostPic"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/iv_lostPic" />
+
+            <TextView
+                android:id="@+id/tv_thing_describe"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="3"
+                android:maxLines="3"
+                android:minLines="3"
+                android:text="物品描述:\n\n"
+                android:textSize="16dp"
+                app:layout_constraintLeft_toLeftOf="@+id/tv_thing_name"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_thing_name" />
+
+            <TextView
+                android:id="@+id/tv_place"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:maxLines="2"
+                android:text="南京仙林"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toTopOf="@+id/btn_contect"
+                app:layout_constraintLeft_toLeftOf="@+id/tv_thing_name" />
+
+            <TextView
+                android:id="@+id/tv_findtime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:maxLines="2"
+                android:text="2.18 16:00"
+                android:textSize="12dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_place" />
+
+            <Button
+                android:id="@+id/btn_contect"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:background="#E63C21"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:text="联系Ta"
+                android:textColor="@color/white"
+                android:textSize="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

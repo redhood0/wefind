@@ -14,9 +14,9 @@ import java.util.HashMap;
  * 相似图片查询工具类，调用百度识图接口
  */
 public class AiLikePicUtil {
-    public static final String APP_ID = "16073411";
-    public static final String API_KEY = "s7BPnvG3UTqkGPGdkMvC3mMz";
-    public static final String SECRET_KEY = "GEoCtQv58H6mBLZhL9sGkPbtWkN4hW3U";
+    public static final String APP_ID = "16156989";
+    public static final String API_KEY = "mOSZynVtahThPWBWnf53qAtP";
+    public static final String SECRET_KEY = "Xr9xdG7VphwMxBpc6kHvu13fKCyltLTw";
 
     /**
      * 上传类似图片

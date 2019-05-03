@@ -15,6 +15,7 @@ public class HomeActivity extends BaseActivity {
     Button btn_loser;
     Button btn_hunting;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,5 +45,9 @@ public class HomeActivity extends BaseActivity {
         btn_finder.setOnClickListener(n -> startActivity(new Intent(HomeActivity.this, FinderActivity.class)));
         btn_loser.setOnClickListener(n -> startActivity(new Intent(HomeActivity.this, LoserActivity.class)));
         btn_hunting.setOnClickListener(n -> startActivity(new Intent(HomeActivity.this, HuntingActivity.class)));
+
+        //todo:delete
+//        findViewById(R.id.btn_test).setOnClickListener(n ->
+//                startActivity(new Intent(HomeActivity.this, SearchResultActivity.class)));
     }
 }
