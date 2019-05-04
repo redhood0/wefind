@@ -6,13 +6,22 @@
     android:layout_height="match_parent"
     android:background="#F8F8F8">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="#FFFFFF"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
     <com.hjq.bar.TitleBar
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="查找失物"
+        android:layout_marginTop="20dp"
+        app:title="寻找失物"
         app:titleSize="18sp"></com.hjq.bar.TitleBar>
     <!--
         <Button
@@ -64,12 +73,12 @@
         android:id="@+id/iv_img4show"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="10dp"
         android:background="#F4F4F5"
         app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
+        app:layout_constraintTop_toTopOf="@+id/layout_takePhote"  />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -128,6 +137,22 @@
             android:textSize="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/iv_location" />
+
+        <com.github.ybq.android.spinkit.SpinKitView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/skv_loading"
+            style="@style/SpinKitView.FadingCircle"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            app:SpinKit_Color="@color/color_orange"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- gray line -->
@@ -191,7 +216,7 @@
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="584dp"
-        android:background="#E74629"
+        android:background="@drawable/button_shape_normal"
         android:text="查找"
         android:textColor="#ffffff"
         android:textSize="20sp"

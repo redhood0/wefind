@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F8F8">
+    android:background="#FFFFFF">
 
     <com.hjq.bar.TitleBar
         android:id="@+id/titleBar"
@@ -12,6 +12,7 @@
         android:layout_height="50dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
         app:title="分类"
         app:titleSize="18sp"></com.hjq.bar.TitleBar>
 

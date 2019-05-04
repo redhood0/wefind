@@ -1,21 +1,32 @@
 package com.wefind.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Icon;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
+import com.github.ybq.android.spinkit.style.FadingCircle;
+import com.hjq.bar.OnTitleBarListener;
+import com.hjq.bar.TitleBar;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.wefind.BaseActivity;
 import com.wefind.R;
 import com.wefind.javabean.ClassChooseBean;
@@ -42,23 +53,33 @@ import io.reactivex.subjects.Subject;
 
 public class LoserActivity extends BaseActivity {
     public static final int CLASSCHOOSE_CODE = 1024;
+    //权限工具
+    final RxPermissions rxPermissions = new RxPermissions(this);
 
-    Button btn_choosePhote;
-    Button btn_search;
-    ImageView iv_img4show;
-    LinearLayout layout_takePhote;
-    ConstraintLayout consLayout_classChoose;
-    TextView tv_classChoose;
-    EditText et_lostName;
-    EditText et_lostDescribe;
+    private TitleBar mTitleBar;
+    private Button btn_search;
+    private ImageView iv_img4show;
+    private LinearLayout layout_takePhote;
+    private ConstraintLayout consLayout_classChoose;
+    private TextView tv_classChoose;
+    private EditText et_lostName;
+    private EditText et_lostDescribe;
     private String imageCompressFilePath;
     private  ClassChooseBean classChooseBean;
+    private ProgressBar progressBar;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loser_page);
-        setTheme(R.style.AppTheme);
+        //设置状态栏透明和颜色亮色
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+        getPermission();
         init();
     }
 
@@ -67,18 +88,28 @@ public class LoserActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
+        mTitleBar = findViewById(R.id.titleBar);
         iv_img4show = findViewById(R.id.iv_img4show);
-        btn_choosePhote = findViewById(R.id.btn_choosePhote);
+        //btn_choosePhote = findViewById(R.id.btn_choosePhote);
         layout_takePhote = findViewById(R.id.layout_takePhote);
         consLayout_classChoose = findViewById(R.id.consLayout_classChoose);
         tv_classChoose = findViewById(R.id.tv_classChoose);
         btn_search = findViewById(R.id.btn_search);
         et_lostName = findViewById(R.id.et_lostName);
         et_lostDescribe = findViewById(R.id.et_lostDescribe);
+        progressBar = (ProgressBar)findViewById(R.id.skv_loading);
         //点击事件
         layout_takePhote.setOnClickListener(n -> startAlbum());
         consLayout_classChoose.setOnClickListener(n -> jumpToClassChoose());
         btn_search.setOnClickListener(n -> searchLostThing());
+        mTitleBar.setOnTitleBarListener(new OnTitleBarListener() {
+            @Override
+            public void onLeftClick(View v) {finish();}
+            @Override
+            public void onTitleClick(View v) {}
+            @Override
+            public void onRightClick(View v) {}
+        });
     }
 
     // 进入相册
@@ -95,7 +126,7 @@ public class LoserActivity extends BaseActivity {
                 .imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg
                 .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
                 .sizeMultiplier(0.9f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
-                .setOutputCameraPath("/CustomPath")// 自定义拍照保存路径,可不填
+                .setOutputCameraPath("")// 自定义拍照保存路径,可不填
                 .enableCrop(true)// 是否裁剪 true or false
                 .compress(true)// 是否压缩 true or false
                 .glideOverride(100, 100)// int glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
@@ -153,17 +184,33 @@ public class LoserActivity extends BaseActivity {
         Observable.create(e -> e.onNext(AiLikePicUtil.selectPic(typeCode,imgPath)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(d -> showLoading())
                 .subscribe(n -> {
-                    //SearchResultRootBean bean = (SearchResultRootBean)n;
-                    Log.d("JSON!", "searchLostThing: "+ n.toString());
+                    deleteLoading();
                     //界面跳转
                     Intent intent = new Intent(LoserActivity.this,SearchResultActivity.class);
                     intent.putExtra("jsonStr",n.toString());
                     startActivity(intent);
                 });
-
     }
 
+    //获取权限
+    public void getPermission() {
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean granted) throws Exception {
+                        if (granted) { // Always true pre-M
+                            // I can control the camera now
+                            Log.i("PERMISSION", "get permission success!");
+                        } else {
+                            Log.i("PERMISSION", "get permission fale");
+                            //Toast.makeText(getApplicationContext(),"拒绝将无法使用相机进行拍照",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+//返回结果处理
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -171,7 +218,6 @@ public class LoserActivity extends BaseActivity {
         //classChoose result
         if (requestCode == CLASSCHOOSE_CODE && resultCode == ClassChooseActivity.RESULT_CODE) {
            classChooseBean = (ClassChooseBean) data.getSerializableExtra("classChooseBean");
-            //Log.d("AAAAA-", classChooseBean.getClassName() + "-" + classChooseBean.isSelected() + "-" + classChooseBean.getTypeCode());
             tv_classChoose.setText(classChooseBean.getClassName());
             tv_classChoose.setTextColor(ContextCompat.getColor(this, R.color.black));
         }
@@ -194,5 +240,16 @@ public class LoserActivity extends BaseActivity {
                     break;
             }
         }
+    }
+
+    //展示loading，消失loading
+    private void showLoading(){
+        Sprite fadingCircle = new FadingCircle();
+        progressBar.setIndeterminateDrawable(fadingCircle);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void deleteLoading(){
+        progressBar.setVisibility(View.INVISIBLE);
     }
 }

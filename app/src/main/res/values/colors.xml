@@ -7,4 +7,5 @@
     <color name="black">#000000</color>
     <color name="selector_gray">#E7E7E7</color>
     <color name="item_selector_orange">#FF4721</color>
+    <color name="orange_normal_btn">#E74629</color>
 </resources>

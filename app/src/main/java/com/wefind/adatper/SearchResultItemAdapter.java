@@ -59,7 +59,7 @@ public class SearchResultItemAdapter extends RecyclerView.Adapter<SearchResultIt
         SearchResultBrief briefObj = JSON.parseObject(brief, SearchResultBrief.class);
 
         holder.tv_thing_name.setText(briefObj.getName());
-        holder.tv_thing_describe.setText(briefObj.getDescribe());
+        holder.tv_thing_describe.setText("描述："+briefObj.getDescribe());
         holder.tv_place.setText(briefObj.getPlace());
         holder.tv_findtime.setText(briefObj.getTime());
 
@@ -76,6 +76,9 @@ public class SearchResultItemAdapter extends RecyclerView.Adapter<SearchResultIt
 
     @Override
     public int getItemCount() {
+        if(datas == null){
+            return 0;
+        }
         return datas.size();
     }
 

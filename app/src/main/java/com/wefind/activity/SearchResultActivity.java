@@ -2,8 +2,10 @@ package com.wefind.activity;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,14 +22,12 @@ import com.wefind.javabean.SearchResultBean;
 import com.wefind.javabean.SearchResultBrief;
 import com.wefind.javabean.SearchResultRootBean;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.OrientationHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
@@ -43,29 +43,23 @@ public class SearchResultActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_result_page);
-        //setTheme(R.style.AppTheme);
+        //设置状态栏透明和颜色亮色
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
         init();
     }
 
     private void init() {
-//        tv_thingName = findViewById(R.id.tv_thingName);
-//        tv_thingDescribe = findViewById(R.id.tv_thingDescribe);
+
         String jsonStr = getIntent().getStringExtra("jsonStr");
 
-        //TODO:规范数据格式。
         SearchResultRootBean resultRootBean = JSON.parseObject(jsonStr, SearchResultRootBean.class);
-        String brief = resultRootBean.getResult().get(0).getBrief();
-        Log.d("BRIEF", "------: " + brief);
-        SearchResultBrief briefBean = JSON.parseObject(brief, SearchResultBrief.class);
-        Log.d("BRIEF", "------: " + briefBean.getDescribe() + "," + briefBean.getName());
         initRecyclerView(resultRootBean.getResult());
     }
 
     private void initRecyclerView(List<SearchResultBean> beans) {
-//        List<String> list = new ArrayList<>();
-//        for(int i =0 ; i < 15; i ++){
-//           list.add("飞利浦剃须刀（2012款）" + i);
-//        }
         //创建默认垂直布局管理器
         mLayoutManager = new LinearLayoutManager(this);
         //创建适配器
