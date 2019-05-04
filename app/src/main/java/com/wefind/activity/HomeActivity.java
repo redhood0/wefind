@@ -6,9 +6,11 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.wefind.BaseActivity;
 import com.wefind.R;
@@ -16,9 +18,10 @@ import com.wefind.R;
 import androidx.appcompat.app.ActionBar;
 
 public class HomeActivity extends BaseActivity {
-    ImageView btn_find;
-    ImageView btn_lost;
-    ImageView btn_hunting;
+    private ImageView btn_find;
+    private ImageView btn_lost;
+    private ImageView btn_hunting;
+    private BottomNavigationViewEx bnve;
 
 
     @Override
@@ -47,11 +50,20 @@ public class HomeActivity extends BaseActivity {
         btn_find = findViewById(R.id.btn_find);
         btn_lost = findViewById(R.id.btn_lost);
         btn_hunting = findViewById(R.id.btn_hunting);
+        bnve = findViewById(R.id.bnve);
+        //禁止底栏动画效果
+        bnve.enableAnimation(false);
+        bnve.enableShiftingMode(false);
+        bnve.enableItemShiftingMode(false);
+
         //设置点击事件
         btn_find.setOnClickListener(n -> startActivity(new Intent(HomeActivity.this, FinderActivity.class)));
         btn_lost.setOnClickListener(n -> startActivity(new Intent(HomeActivity.this, LoserActivity.class)));
         btn_hunting.setOnClickListener(n -> startActivity(new Intent(HomeActivity.this, HuntingActivity.class)));
-
+//        bnve.setOnNavigationItemSelectedListener(item -> {
+//            Toast.makeText(this, "-"+ item.getItemId(), Toast.LENGTH_SHORT).show();
+//            return false;
+//        });
         //todo:delete
 //        findViewById(R.id.btn_test).setOnClickListener(n ->
 //                startActivity(new Intent(HomeActivity.this, TestHomeActivity.class)));

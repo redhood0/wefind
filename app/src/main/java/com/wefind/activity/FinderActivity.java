@@ -9,7 +9,6 @@ import android.os.Bundle;
 
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.TimeUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,15 +29,10 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.wefind.BaseActivity;
 import com.wefind.R;
-import com.wefind.controller.FinderController;
+
 import com.wefind.javabean.ClassChooseBean;
 import com.wefind.utils.AiLikePicUtil;
-import com.wefind.utils.CameraUtil;
 
-import org.json.JSONException;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -77,7 +71,7 @@ public class FinderActivity extends BaseActivity {
         //设置状态栏透明和颜色亮色
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
-            getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
         getPermission();
         init();
@@ -104,11 +98,17 @@ public class FinderActivity extends BaseActivity {
         //设置点击事件
         mTitleBar.setOnTitleBarListener(new OnTitleBarListener() {
             @Override
-            public void onLeftClick(View v) {finish();}
+            public void onLeftClick(View v) {
+                finish();
+            }
+
             @Override
-            public void onTitleClick(View v) {}
+            public void onTitleClick(View v) {
+            }
+
             @Override
-            public void onRightClick(View v) {}
+            public void onRightClick(View v) {
+            }
         });
         //拍照事件
         layout_takePhote.setOnClickListener(n -> startAlbum());
@@ -190,7 +190,7 @@ public class FinderActivity extends BaseActivity {
         //获取分类
         String typeCode = classChooseBean.getTypeCode();
         //获取的数据进行传递至ai服务器和个人数据库（异步操作）
-        Observable.create(e -> e.onNext(AiLikePicUtil.uploadPic(name,describe,place,time,typeCode,imgPath)))
+        Observable.create(e -> e.onNext(AiLikePicUtil.uploadPic(name, describe, place, time, typeCode, imgPath)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(n -> showLoading())
@@ -242,13 +242,13 @@ public class FinderActivity extends BaseActivity {
     }
 
     //展示loading，消失loading
-    private void showLoading(){
+    private void showLoading() {
         Sprite fadingCircle = new FadingCircle();
         progressBar.setIndeterminateDrawable(fadingCircle);
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    private void deleteLoading(){
+    private void deleteLoading() {
         progressBar.setVisibility(View.INVISIBLE);
     }
 
