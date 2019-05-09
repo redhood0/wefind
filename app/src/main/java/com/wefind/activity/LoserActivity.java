@@ -17,6 +17,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationListener;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeResult;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.github.ybq.android.spinkit.style.FadingCircle;
@@ -32,6 +37,7 @@ import com.wefind.R;
 import com.wefind.javabean.ClassChooseBean;
 import com.wefind.javabean.SearchResultRootBean;
 import com.wefind.utils.AiLikePicUtil;
+import com.wefind.utils.LocationUtil;
 
 import org.json.JSONException;
 import org.reactivestreams.Subscriber;
@@ -51,8 +57,9 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.Subject;
 
-public class LoserActivity extends BaseActivity {
+public class LoserActivity extends BaseActivity implements AMapLocationListener, GeocodeSearch.OnGeocodeSearchListener {
     public static final int CLASSCHOOSE_CODE = 1024;
+    public static final int LOCATION_CODE = 256;
     //权限工具
     final RxPermissions rxPermissions = new RxPermissions(this);
 
@@ -62,13 +69,12 @@ public class LoserActivity extends BaseActivity {
     private LinearLayout layout_takePhote;
     private ConstraintLayout consLayout_classChoose;
     private TextView tv_classChoose;
+    private TextView tv_location;
     private EditText et_lostName;
     private EditText et_lostDescribe;
     private String imageCompressFilePath;
-    private  ClassChooseBean classChooseBean;
+    private ClassChooseBean classChooseBean;
     private ProgressBar progressBar;
-
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,7 +83,7 @@ public class LoserActivity extends BaseActivity {
         //设置状态栏透明和颜色亮色
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
-            getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
         getPermission();
         init();
@@ -97,19 +103,30 @@ public class LoserActivity extends BaseActivity {
         btn_search = findViewById(R.id.btn_search);
         et_lostName = findViewById(R.id.et_lostName);
         et_lostDescribe = findViewById(R.id.et_lostDescribe);
-        progressBar = (ProgressBar)findViewById(R.id.skv_loading);
+        progressBar = (ProgressBar) findViewById(R.id.skv_loading);
+        tv_location = findViewById(R.id.tv_location);
+        //注册location
+        LocationUtil.setActivityContext(this);
+        LocationUtil.getLocationMsg(this);
         //点击事件
         layout_takePhote.setOnClickListener(n -> startAlbum());
         consLayout_classChoose.setOnClickListener(n -> jumpToClassChoose());
         btn_search.setOnClickListener(n -> searchLostThing());
         mTitleBar.setOnTitleBarListener(new OnTitleBarListener() {
             @Override
-            public void onLeftClick(View v) {finish();}
+            public void onLeftClick(View v) { finish(); }
             @Override
-            public void onTitleClick(View v) {}
+            public void onTitleClick(View v) { }
             @Override
-            public void onRightClick(View v) {}
+            public void onRightClick(View v) { }
         });
+        //跳转地图定位
+        tv_location.setOnClickListener(n -> jumpToLocationPage());
+    }
+
+    private void jumpToLocationPage() {
+        Intent intent = new Intent(LoserActivity.this, LocationActivity.class);
+        startActivityForResult(intent, LOCATION_CODE);
     }
 
     // 进入相册
@@ -156,9 +173,10 @@ public class LoserActivity extends BaseActivity {
         Intent intent = new Intent(LoserActivity.this, ClassChooseActivity.class);
         startActivityForResult(intent, CLASSCHOOSE_CODE);
     }
+
     //传输信息至远端，进行信息匹配
     //TODO:显示匹配图片和对方
-    public void searchLostThing(){
+    public void searchLostThing() {
         //获取照片
         String imgPath = imageCompressFilePath;
         //获取名称
@@ -167,34 +185,34 @@ public class LoserActivity extends BaseActivity {
         String describe = et_lostDescribe.getText().toString();
 
         //非空判断
-        if(TextUtils.isEmpty(imgPath)){
+        if (TextUtils.isEmpty(imgPath)) {
             Toast.makeText(this, "照片不能为空", Toast.LENGTH_SHORT).show();
             return;
-        }else if(TextUtils.isEmpty(name)){
+        } else if (TextUtils.isEmpty(name)) {
             Toast.makeText(this, "名称不能为空", Toast.LENGTH_SHORT).show();
             return;
-        }else if(classChooseBean == null || TextUtils.isEmpty(classChooseBean.getTypeCode())){
+        } else if (classChooseBean == null || TextUtils.isEmpty(classChooseBean.getTypeCode())) {
             Toast.makeText(this, "类型不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
         //获取分类
-        String typeCode= classChooseBean.getTypeCode();
+        String typeCode = classChooseBean.getTypeCode();
 
         //获取的数据进行传递至ai服务器和个人数据库（异步操作）
-        Observable.create(e -> e.onNext(AiLikePicUtil.selectPic(typeCode,imgPath)))
+        Observable.create(e -> e.onNext(AiLikePicUtil.selectPic(typeCode, imgPath)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(d -> showLoading())
                 .subscribe(n -> {
                     deleteLoading();
                     //界面跳转
-                    Intent intent = new Intent(LoserActivity.this,SearchResultActivity.class);
-                    intent.putExtra("jsonStr",n.toString());
+                    Intent intent = new Intent(LoserActivity.this, SearchResultActivity.class);
+                    intent.putExtra("jsonStr", n.toString());
                     startActivity(intent);
                 });
     }
 
-    //获取权限
+    //获取拍照权限
     public void getPermission() {
         rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(new Consumer<Boolean>() {
@@ -210,17 +228,23 @@ public class LoserActivity extends BaseActivity {
                     }
                 });
     }
-//返回结果处理
+
+    //返回结果处理
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         //classChoose result
         if (requestCode == CLASSCHOOSE_CODE && resultCode == ClassChooseActivity.RESULT_CODE) {
-           classChooseBean = (ClassChooseBean) data.getSerializableExtra("classChooseBean");
+            classChooseBean = (ClassChooseBean) data.getSerializableExtra("classChooseBean");
             tv_classChoose.setText(classChooseBean.getClassName());
             tv_classChoose.setTextColor(ContextCompat.getColor(this, R.color.black));
         }
+        if (requestCode == LOCATION_CODE && resultCode == LocationActivity.LOCATION_CHOOSE_CODE) {
+            String address = data.getStringExtra("address");
+           tv_location.setText(address);
+        }
+
         //photo pick result
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
@@ -243,13 +267,53 @@ public class LoserActivity extends BaseActivity {
     }
 
     //展示loading，消失loading
-    private void showLoading(){
+    private void showLoading() {
         Sprite fadingCircle = new FadingCircle();
         progressBar.setIndeterminateDrawable(fadingCircle);
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    private void deleteLoading(){
+    //locationUtil异步调用的一个方法
+    public void callBackChangeLocationTextview(String text) {
+        tv_location.setText(text);
+    }
+
+
+    private void deleteLoading() {
         progressBar.setVisibility(View.INVISIBLE);
+    }
+//定位回调接口
+    @Override
+    public void onLocationChanged(AMapLocation aMapLocation) {
+        if (aMapLocation != null) {
+            if (aMapLocation.getErrorCode() == 0) {
+                //可在其中解析amapLocation获取相应内容。
+                aMapLocation.getAddress();
+
+                Log.d("Location", "aMapLocation.getAddress(): " + aMapLocation.getAddress()+"," +aMapLocation.getLatitude());
+                tv_location.setText(aMapLocation.getAddress());
+                LocationUtil.mLocationClient.stopLocation();//停止定位后，本地定位服务并不会被销毁
+            } else {
+                //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                Log.e("AmapError", "location Error, ErrCode:"
+                        + aMapLocation.getErrorCode() + ", errInfo:"
+                        + aMapLocation.getErrorInfo());
+            }
+        }
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    @Override
+    public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
+
+    }
+
+    @Override
+    public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
+
     }
 }

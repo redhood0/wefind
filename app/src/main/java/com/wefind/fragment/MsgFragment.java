@@ -11,10 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class DiscoverFragment extends Fragment {
+public class MsgFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.discover_fragmentpage,container,false);
+        return inflater.inflate(R.layout.msg_fragmentpage,container,false);
     }
 }

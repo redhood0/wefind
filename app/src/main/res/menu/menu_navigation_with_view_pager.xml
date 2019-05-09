@@ -6,11 +6,10 @@
         android:id="@+id/action_home"
         android:enabled="true"
         android:icon="@mipmap/home_menuicon"
-        android:checked="true"
         android:title="首页"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_findmarket"
+        android:id="@+id/action_discover"
         android:enabled="true"
         android:icon="@mipmap/find_menuicon"
         android:title="发现"

@@ -11,16 +11,15 @@
         android:layout_height="20dp"
         android:background="#FFFFFF"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.hjq.bar.TitleBar
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="20dp"
         app:title="寻找失物"
         app:titleSize="18sp"></com.hjq.bar.TitleBar>
     <!--
@@ -49,7 +48,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
 
-             android:src="@mipmap/icon_photo" />
+            android:src="@mipmap/icon_photo" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -67,7 +66,7 @@
         android:layout_marginBottom="8dp"
         android:background="#F8F8F8"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_takePhote" ></ImageView>
+        app:layout_constraintTop_toBottomOf="@+id/layout_takePhote"></ImageView>
 
     <ImageView
         android:id="@+id/iv_img4show"
@@ -78,7 +77,7 @@
         app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/layout_takePhote"  />
+        app:layout_constraintTop_toTopOf="@+id/layout_takePhote" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -97,7 +96,8 @@
             android:layout_marginTop="20dp"
             android:background="@color/white"
             android:hint="失物名称 品牌型号不可少"
-            android:inputType="" android:lines="1"
+            android:inputType=""
+            android:lines="1"
             android:maxLength="25"
             android:textSize="20dp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -112,7 +112,8 @@
             android:background="@color/white"
             android:gravity="top"
             android:hint="这里详细描述一下遗失物品的细节\n比如物品的外观特征、品牌型号、遗失地点、遗失时间等具体信息会加快搜寻进度哦~"
-            android:inputType="" android:maxLength="120"
+            android:inputType=""
+            android:maxLength="120"
             android:maxLines="5"
             android:textSize="15dp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -123,35 +124,39 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-             android:src="@mipmap/icon_location"
+            android:src="@mipmap/icon_location"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@+id/et_lostDescribe" />
 
         <TextView
-            android:layout_width="350dp"
+            android:id="@+id/tv_location"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:layout_marginRight="80dp"
             android:layout_marginBottom="19dp"
-            android:text="南京工业职业技术学院一食堂..."
-            android:textColor="#000000"
+            android:maxLines="1"
+            android:clickable="true"
+            android:ellipsize="end"
+            android:text="江苏省南京市鼓楼区南京工业职业技术学院"
+            android:textColor="@drawable/selector_item_color"
             android:textSize="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/iv_location" />
+            app:layout_constraintLeft_toRightOf="@+id/iv_location"
+            app:layout_constraintRight_toRightOf="parent" />
 
-        <com.github.ybq.android.spinkit.SpinKitView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/skv_loading"
             style="@style/SpinKitView.FadingCircle"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
-            app:SpinKit_Color="@color/color_orange"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
+            app:SpinKit_Color="@color/color_orange"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -163,7 +168,7 @@
         android:layout_marginBottom="8dp"
         android:background="#F8F8F8"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ConstraintLayout" ></ImageView>
+        app:layout_constraintTop_toBottomOf="@+id/ConstraintLayout"></ImageView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/consLayout_classChoose"
@@ -173,8 +178,9 @@
         android:background="@drawable/selector"
         android:clickable="true"
 
+        android:focusable="true"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_grayline2" android:focusable="true">
+        app:layout_constraintTop_toBottomOf="@+id/iv_grayline2">
 
         <TextView
             android:layout_width="wrap_content"
@@ -204,7 +210,7 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_marginRight="20dp"
-             android:src="@mipmap/icon_right"
+            android:src="@mipmap/icon_right"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
