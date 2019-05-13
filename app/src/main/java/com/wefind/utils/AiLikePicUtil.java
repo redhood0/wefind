@@ -4,30 +4,34 @@ import android.util.Log;
 
 import com.baidu.aip.imagesearch.AipImageSearch;
 import com.wefind.javabean.SearchResultRootBean;
+import com.wefind.javabean.ThingItem;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.HashMap;
+
+import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.UploadFileListener;
 
 /**
  * 相似图片查询工具类，调用百度识图接口
  */
 public class AiLikePicUtil {
-    public static final String APP_ID = "16156989";
-    public static final String API_KEY = "mOSZynVtahThPWBWnf53qAtP";
-    public static final String SECRET_KEY = "Xr9xdG7VphwMxBpc6kHvu13fKCyltLTw";
+    public static final String APP_ID = "16230421";
+    public static final String API_KEY = "RhVy5E11YaQD0CGiCpa11Uco";
+    public static final String SECRET_KEY = "pf8cPTs2WDPLRU3f2bwUEIYwiPUievtg";
 
     /**
      * 上传类似图片
      *
      * @param name
-     * @param describe
-     * @param fileName
      * @return
      * @throws JSONException
      */
-    public static JSONObject uploadPic(String name, String describe, String place, String time, String typeCode, String fileName) throws JSONException {
+    public static JSONObject uploadPic(String name, String bmobItemId, String time, String typeCode,String filePath) throws JSONException {
         // 初始化一个AipImageSearch
         AipImageSearch client = new AipImageSearch(APP_ID, API_KEY, SECRET_KEY);
         // 可选：设置网络连接参数
@@ -37,22 +41,23 @@ public class AiLikePicUtil {
         HashMap<String, String> options = new HashMap<String, String>();
         StringBuffer sb = new StringBuffer();
         // {"name":"电视机","describe":"黑色","place":"南京市雨花台区","finderId":"1002545","place":"南京，雨花台区","time":"2.16 8:00" }
-        //todo：findId后期由数据库对接
-        sb.append("{\"name\":\"").append(name).append("\",\"describe\":\"").append(describe)
-                .append("\",\"finderId\":\"132124\",\"place\":\"").append(place).append("\",\"time\":\"")
+
+        sb.append("{\"name\":\"").append(name).append("\",\"bmobItemId\":\"")
+                .append(bmobItemId).append("\",\"time\":\"")
                 .append(time).append("\"}");
         options.put("brief", sb.toString());
         options.put("tags", typeCode);
+        Log.d("JSON", "filePath: " + filePath);
 
-        String image = fileName;
+        String image = filePath;
         JSONObject res = client.similarAdd(image, options);
         Log.d("JSON", "selectPic: " + res.toString(2));
-        return res;
+        return new JSONObject();
     }
+
 
     /**
      * 检索类似图片
-     *
      * @param filePath
      * @return
      * @throws JSONException
@@ -73,4 +78,10 @@ public class AiLikePicUtil {
         //SearchResultRootBean resultRootBean = com.alibaba.fastjson.JSONObject.parseObject(((org.json.JSONObject) res).toString(),SearchResultRootBean.class);
         return res;
     }
+
+    private static void logd(String s) {
+        Log.d("BMOB", s);
+    }
+
+
 }

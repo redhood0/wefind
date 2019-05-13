@@ -1,11 +1,13 @@
 package com.wefind.javabean;
 
+import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobObject;
+
+//{"name":"guizi","bmobItemId":"e413e420d5","time":"05.12 02:42"}
 public class SearchResultBrief {
     private String name;
-    private String describe;
-    private String place;
+    private String bmobItemId;
     private String time;
-    private String finderId;
 
     public String getName() {
         return name;
@@ -15,28 +17,12 @@ public class SearchResultBrief {
         this.name = name;
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getBmobItemId() {
+        return bmobItemId;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
-    }
-
-    public String getPlace() {
-        return place;
-    }
-
-    public void setPlace(String place) {
-        this.place = place;
-    }
-
-    public String getFinderId() {
-        return finderId;
-    }
-
-    public void setFinderId(String finderId) {
-        this.finderId = finderId;
+    public void setBmobItemId(String bmobItemId) {
+        this.bmobItemId = bmobItemId;
     }
 
     public String getTime() {

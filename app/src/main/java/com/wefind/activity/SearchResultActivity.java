@@ -21,7 +21,9 @@ import com.wefind.decoration.EmptyRecyclerView;
 import com.wefind.javabean.SearchResultBean;
 import com.wefind.javabean.SearchResultBrief;
 import com.wefind.javabean.SearchResultRootBean;
+import com.wefind.javabean.ThingItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -38,11 +40,14 @@ public class SearchResultActivity extends BaseActivity {
 
     private RecyclerView.LayoutManager mLayoutManager;
 
+    public static SearchResultActivity searchResultActivity;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_result_page);
+        searchResultActivity = this;
         //设置状态栏透明和颜色亮色
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
@@ -53,13 +58,14 @@ public class SearchResultActivity extends BaseActivity {
 
     private void init() {
 
-        String jsonStr = getIntent().getStringExtra("jsonStr");
+        ArrayList<ThingItem> thingItems = (ArrayList<ThingItem>)getIntent().getSerializableExtra("ThingItems");
 
-        SearchResultRootBean resultRootBean = JSON.parseObject(jsonStr, SearchResultRootBean.class);
-        initRecyclerView(resultRootBean.getResult());
+//todo:changeback
+//        SearchResultRootBean resultRootBean = JSON.parseObject(jsonStr, SearchResultRootBean.class);
+        initRecyclerView(thingItems);
     }
 
-    private void initRecyclerView(List<SearchResultBean> beans) {
+    private void initRecyclerView(List<ThingItem> beans) {
         //创建默认垂直布局管理器
         mLayoutManager = new LinearLayoutManager(this);
         //创建适配器

@@ -1,18 +1,29 @@
 package com.wefind.adatper;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.bumptech.glide.Glide;
 import com.wefind.R;
+import com.wefind.activity.SearchResultActivity;
 import com.wefind.javabean.SearchResultBean;
 import com.wefind.javabean.SearchResultBrief;
 import com.wefind.javabean.SearchResultRootBean;
+import com.wefind.javabean.ThingItem;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,17 +38,19 @@ public class SearchResultItemAdapter extends RecyclerView.Adapter<SearchResultIt
         public final TextView tv_thing_describe;
         public final TextView tv_place;
         public final TextView tv_findtime;
+        public final ImageView iv_lostPic;
         public VH(View v) {
             super(v);
             tv_thing_name = v.findViewById(R.id.tv_thing_name);
             tv_thing_describe = v.findViewById(R.id.tv_thing_describe);
             tv_place = v.findViewById(R.id.tv_place);
             tv_findtime = v.findViewById(R.id.tv_findtime);
+            iv_lostPic = v.findViewById(R.id.iv_lostPic);
         }
     }
 
-    private List<SearchResultBean> datas;
-    public SearchResultItemAdapter(List<SearchResultBean> data) {
+    private List<ThingItem> datas;
+    public SearchResultItemAdapter(List<ThingItem> data) {
         this.datas = data;
     }
 
@@ -55,14 +68,19 @@ public class SearchResultItemAdapter extends RecyclerView.Adapter<SearchResultIt
 //适配渲染数据到View
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
-        String brief = datas.get(position).getBrief();
-        SearchResultBrief briefObj = JSON.parseObject(brief, SearchResultBrief.class);
-
-        holder.tv_thing_name.setText(briefObj.getName());
-        holder.tv_thing_describe.setText("描述："+briefObj.getDescribe());
-        holder.tv_place.setText(briefObj.getPlace());
-        holder.tv_findtime.setText(briefObj.getTime());
-
+        ThingItem thingItem = datas.get(position);
+        holder.tv_thing_name.setText(thingItem.getThingName());
+        holder.tv_thing_describe.setText("描述："+thingItem.getDescribe());
+        holder.tv_place.setText(thingItem.getPlace());
+        holder.tv_findtime.setText(thingItem.getAddTime());
+//        bitmap.compress(Bitmap.CompressFormat.PNG,100,baos);
+//
+//        byte[ ] bytes = baos.toByteArray;
+//
+//        Glide.with(context).load(bytes).into(imageView);
+        Glide.with(SearchResultActivity.searchResultActivity)
+                .load(thingItem.getPicurl())
+                .into(holder.iv_lostPic);
         //监听事件
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,4 +119,6 @@ public class SearchResultItemAdapter extends RecyclerView.Adapter<SearchResultIt
         datas.remove(0);
         notifyItemRemoved(0);
     }
+
+
 }

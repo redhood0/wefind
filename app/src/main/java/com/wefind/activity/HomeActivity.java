@@ -7,9 +7,11 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.os.Environment;
 import android.util.Log;
 import android.util.TimeUtils;
 import android.view.View;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -24,8 +26,11 @@ import com.wefind.fragment.DiscoverFragment;
 import com.wefind.fragment.HomeFragment;
 import com.wefind.fragment.MsgFragment;
 import com.wefind.fragment.PersonFragment;
+import com.wefind.javabean.Person;
+import com.wefind.utils.BmobUtil;
 import com.wefind.utils.LocationUtil;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -34,6 +39,13 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
+import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.QueryListener;
+import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UploadFileListener;
 import io.reactivex.functions.Consumer;
 
 public class HomeActivity extends BaseActivity {
@@ -62,6 +74,13 @@ public class HomeActivity extends BaseActivity {
         setContentView(R.layout.home_page);
         //清理缓存
         PictureFileUtils.deleteCacheDirFile(HomeActivity.this);
+        //启动bmob
+        //Bmob.initialize(this, "cf13d0a4f1a3b2f067ff3cfb19efc717");
+//        Person p2 = new Person();
+//        p2.setObjectId("1fa36cac40");
+      //  BmobUtil<Person> bmobUtil = new BmobUtil<Person>();
+//        Log.d("BMOB", "onCreate:== " + Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/1557288109979.jpg");
+        //bmobUtil.add1Pic(Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera/IMG_20190503_212905.jpg");
         init();
     }
 

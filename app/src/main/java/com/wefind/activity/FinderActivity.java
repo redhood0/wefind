@@ -31,7 +31,9 @@ import com.wefind.BaseActivity;
 import com.wefind.R;
 
 import com.wefind.javabean.ClassChooseBean;
+import com.wefind.javabean.ThingItem;
 import com.wefind.utils.AiLikePicUtil;
+import com.wefind.utils.BmobUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,6 +43,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import cn.bmob.v3.Bmob;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -115,7 +118,7 @@ public class FinderActivity extends BaseActivity {
         //类型选择
         consLayout_classChoose.setOnClickListener(n -> jumpToClassChoose());
         //上传事件
-        btn_upload.setOnClickListener(n -> uploadFindThing());
+        btn_upload.setOnClickListener(n -> bmob4UpdateFile());
     }
 
     // 进入相册
@@ -163,9 +166,26 @@ public class FinderActivity extends BaseActivity {
         startActivityForResult(intent, CLASSCHOOSE_CODE);
     }
 
-    private void uploadFindThing() {
-        //获取照片
-        String imgPath = imageCompressFilePath;
+    //上传信息至百度ai数据库
+    private void uploadFindThing(String itemId,ThingItem item) {
+        //获取的数据进行传递至ai服务器（异步操作）
+        BmobUtil<ThingItem> util = new BmobUtil();
+        Observable.create(e -> e.onNext(AiLikePicUtil.uploadPic(item.getThingName(),itemId,item.getAddTime(), item.getTypeCode(), imageCompressFilePath)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                //.doOnSubscribe(n -> showLoading())
+                .subscribe(n -> {
+                    deleteLoading();
+                    Log.d("JSON!", "FoundLostThing: " + n.toString());
+                    //返回提示弹窗信息即可
+                    Toast.makeText(this, "上传信息成功！", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    //通过bmob的api上传图片文件
+    public void bmob4UpdateFile() {
+        //弹loading动画
+        showLoading();
         //获取名称
         String name = et_findName.getText().toString();
         //获取描述
@@ -175,9 +195,10 @@ public class FinderActivity extends BaseActivity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM.dd HH:mm");// HH:mm:ss
         Date date = new Date(System.currentTimeMillis());
         String time = simpleDateFormat.format(date);
-
+        //获取分类
+        String typeCode = classChooseBean.getTypeCode();
         //非空判断
-        if (TextUtils.isEmpty(imgPath)) {
+        if (TextUtils.isEmpty(imageCompressFilePath)) {
             Toast.makeText(this, "照片不能为空", Toast.LENGTH_SHORT).show();
             return;
         } else if (TextUtils.isEmpty(name)) {
@@ -187,19 +208,26 @@ public class FinderActivity extends BaseActivity {
             Toast.makeText(this, "类型不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        //获取分类
-        String typeCode = classChooseBean.getTypeCode();
-        //获取的数据进行传递至ai服务器和个人数据库（异步操作）
-        Observable.create(e -> e.onNext(AiLikePicUtil.uploadPic(name, describe, place, time, typeCode, imgPath)))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(n -> showLoading())
-                .subscribe(n -> {
-                    deleteLoading();
-                    Log.d("JSON!", "searchLostThing: " + n.toString());
-                    //返回提示弹窗信息即可
-                    Toast.makeText(this, "上传信息成功！", Toast.LENGTH_SHORT).show();
-                });
+        ThingItem ti = new ThingItem(name, describe, null, "1234", 1, time, place, typeCode);
+        //----------
+        //获取照片
+        String imgPath = imageCompressFilePath;
+        //初始化Bomb框架
+        Bmob.initialize(this, "cf13d0a4f1a3b2f067ff3cfb19efc717");
+        BmobUtil<ThingItem> bmobUtil = new BmobUtil();
+        bmobUtil.setActivity(this);
+        bmobUtil.add1Pic(imgPath, ti);
+    }
+
+    @Override
+    public void noticeFromBmob(String objId, ThingItem thingItem) {
+        if (objId.equals("false")) {
+            deleteLoading();
+            //返回提示弹窗信息即可
+            Toast.makeText(this, "ERROR,上传信息失败！", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        uploadFindThing(objId,thingItem);
     }
 
     //获取权限

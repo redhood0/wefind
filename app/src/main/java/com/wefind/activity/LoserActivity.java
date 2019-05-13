@@ -17,6 +17,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.services.geocoder.GeocodeResult;
@@ -35,20 +37,26 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.wefind.BaseActivity;
 import com.wefind.R;
 import com.wefind.javabean.ClassChooseBean;
+import com.wefind.javabean.SearchResultBean;
+import com.wefind.javabean.SearchResultBrief;
 import com.wefind.javabean.SearchResultRootBean;
+import com.wefind.javabean.ThingItem;
 import com.wefind.utils.AiLikePicUtil;
+import com.wefind.utils.BmobUtil;
 import com.wefind.utils.LocationUtil;
 
 import org.json.JSONException;
 import org.reactivestreams.Subscriber;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import cn.bmob.v3.Bmob;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -100,7 +108,7 @@ public class LoserActivity extends BaseActivity implements AMapLocationListener,
         layout_takePhote = findViewById(R.id.layout_takePhote);
         consLayout_classChoose = findViewById(R.id.consLayout_classChoose);
         tv_classChoose = findViewById(R.id.tv_classChoose);
-        btn_search = findViewById(R.id.btn_search);
+        btn_search = findViewById(R.id.btn_search);//先查objId，再查具体图片url
         et_lostName = findViewById(R.id.et_lostName);
         et_lostDescribe = findViewById(R.id.et_lostDescribe);
         progressBar = (ProgressBar) findViewById(R.id.skv_loading);
@@ -114,11 +122,17 @@ public class LoserActivity extends BaseActivity implements AMapLocationListener,
         btn_search.setOnClickListener(n -> searchLostThing());
         mTitleBar.setOnTitleBarListener(new OnTitleBarListener() {
             @Override
-            public void onLeftClick(View v) { finish(); }
+            public void onLeftClick(View v) {
+                finish();
+            }
+
             @Override
-            public void onTitleClick(View v) { }
+            public void onTitleClick(View v) {
+            }
+
             @Override
-            public void onRightClick(View v) { }
+            public void onRightClick(View v) {
+            }
         });
         //跳转地图定位
         tv_location.setOnClickListener(n -> jumpToLocationPage());
@@ -183,7 +197,8 @@ public class LoserActivity extends BaseActivity implements AMapLocationListener,
         String name = et_lostName.getText().toString();
         //获取描述
         String describe = et_lostDescribe.getText().toString();
-
+        //获取分类
+        String typeCode = classChooseBean.getTypeCode();
         //非空判断
         if (TextUtils.isEmpty(imgPath)) {
             Toast.makeText(this, "照片不能为空", Toast.LENGTH_SHORT).show();
@@ -195,21 +210,48 @@ public class LoserActivity extends BaseActivity implements AMapLocationListener,
             Toast.makeText(this, "类型不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        //获取分类
-        String typeCode = classChooseBean.getTypeCode();
-
         //获取的数据进行传递至ai服务器和个人数据库（异步操作）
         Observable.create(e -> e.onNext(AiLikePicUtil.selectPic(typeCode, imgPath)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(d -> showLoading())
-                .subscribe(n -> {
-                    deleteLoading();
-                    //界面跳转
-                    Intent intent = new Intent(LoserActivity.this, SearchResultActivity.class);
-                    intent.putExtra("jsonStr", n.toString());
-                    startActivity(intent);
-                });
+                .subscribe(n -> searchFromBmob(n.toString()));
+    }
+
+    //查询出id，后再通过bmob查出详细数据
+    public void searchFromBmob(String json) {
+        //解析json对象
+        if(json == null){
+            Log.d("error", "searchFromBmob: is Error");
+            return;
+        }
+        Log.d("JSON-1", "searchFromBmob: "+json);
+        SearchResultRootBean resultRootBean = JSON.parseObject(json,SearchResultRootBean.class);
+        List<SearchResultBean> results = resultRootBean.getResult();
+        //初始化bmob对象
+        Bmob.initialize(this, "cf13d0a4f1a3b2f067ff3cfb19efc717");
+        BmobUtil<ThingItem> bmobUtil = new BmobUtil();
+        bmobUtil.setActivity(this);
+        //bmobUtil.add1Pic(imgPath, ti);
+        ArrayList<String> ids = new ArrayList<>(8);
+        for(SearchResultBean bean : results){
+            //todo：0.53我随便写的
+            if(bean.getScore() >= 0.53){
+                SearchResultBrief brief = JSON.parseObject(bean.getBrief(),SearchResultBrief.class);
+                ids.add(brief.getBmobItemId());
+            }
+        }
+        bmobUtil.getThingItem(ids);
+    }
+    //接收bmob回调的结果,页面跳转
+    @Override
+    public void noticeFromBmob(ArrayList<ThingItem> thingItems){
+        deleteLoading();//隐藏loading动画
+        //界面跳转
+        Intent intent = new Intent(LoserActivity.this, SearchResultActivity.class);
+
+        intent.putExtra("ThingItems",thingItems);
+        startActivity(intent);
     }
 
     //获取拍照权限
@@ -242,7 +284,7 @@ public class LoserActivity extends BaseActivity implements AMapLocationListener,
         }
         if (requestCode == LOCATION_CODE && resultCode == LocationActivity.LOCATION_CHOOSE_CODE) {
             String address = data.getStringExtra("address");
-           tv_location.setText(address);
+            tv_location.setText(address);
         }
 
         //photo pick result
@@ -282,7 +324,8 @@ public class LoserActivity extends BaseActivity implements AMapLocationListener,
     private void deleteLoading() {
         progressBar.setVisibility(View.INVISIBLE);
     }
-//定位回调接口
+
+    //定位回调接口
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null) {
@@ -290,7 +333,7 @@ public class LoserActivity extends BaseActivity implements AMapLocationListener,
                 //可在其中解析amapLocation获取相应内容。
                 aMapLocation.getAddress();
 
-                Log.d("Location", "aMapLocation.getAddress(): " + aMapLocation.getAddress()+"," +aMapLocation.getLatitude());
+                Log.d("Location", "aMapLocation.getAddress(): " + aMapLocation.getAddress() + "," + aMapLocation.getLatitude());
                 tv_location.setText(aMapLocation.getAddress());
                 LocationUtil.mLocationClient.stopLocation();//停止定位后，本地定位服务并不会被销毁
             } else {
