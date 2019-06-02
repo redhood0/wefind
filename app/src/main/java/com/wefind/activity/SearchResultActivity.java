@@ -1,26 +1,14 @@
 package com.wefind.activity;
 
-import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.wefind.BaseActivity;
 import com.wefind.R;
 import com.wefind.adatper.SearchResultItemAdapter;
-import com.wefind.decoration.Divider;
 import com.wefind.decoration.EmptyRecyclerView;
-import com.wefind.javabean.SearchResultBean;
-import com.wefind.javabean.SearchResultBrief;
-import com.wefind.javabean.SearchResultRootBean;
 import com.wefind.javabean.ThingItem;
 
 import java.util.ArrayList;

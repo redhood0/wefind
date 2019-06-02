@@ -6,12 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.amap.api.services.help.Tip;
 import com.wefind.R;
 import com.wefind.activity.LocationActivity;
-import com.wefind.javabean.SearchResultBean;
-import com.wefind.javabean.SearchResultBrief;
 
 import java.util.ArrayList;
 import java.util.List;

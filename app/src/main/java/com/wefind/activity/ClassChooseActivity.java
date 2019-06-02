@@ -1,15 +1,14 @@
 package com.wefind.activity;
 
-import android.app.Instrumentation;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.KeyEvent;
+
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
+
 
 import com.hjq.bar.OnTitleBarListener;
 import com.hjq.bar.TitleBar;
@@ -33,7 +32,6 @@ public class ClassChooseActivity extends BaseActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.class_choose_page);
         setContentView(R.layout.class_choose_page);
         //设置状态栏透明和颜色亮色
         if (Build.VERSION.SDK_INT >= 21) {

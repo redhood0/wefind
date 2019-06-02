@@ -1,6 +1,5 @@
 package com.wefind.javabean;
 
-import java.io.Serializable;
 import java.util.List;
 
 public class SearchResultRootBean  {

@@ -1,8 +1,5 @@
 package com.wefind.javabean;
 
-import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobObject;
-
 //{"name":"guizi","bmobItemId":"e413e420d5","time":"05.12 02:42"}
 public class SearchResultBrief {
     private String name;

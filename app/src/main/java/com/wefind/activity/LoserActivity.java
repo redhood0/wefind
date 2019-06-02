@@ -18,14 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.github.ybq.android.spinkit.sprite.Sprite;
-import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.github.ybq.android.spinkit.style.FadingCircle;
 import com.hjq.bar.OnTitleBarListener;
 import com.hjq.bar.TitleBar;
@@ -45,9 +43,6 @@ import com.wefind.utils.AiLikePicUtil;
 import com.wefind.utils.BmobUtil;
 import com.wefind.utils.LocationUtil;
 
-import org.json.JSONException;
-import org.reactivestreams.Subscriber;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,12 +53,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import cn.bmob.v3.Bmob;
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.Subject;
+
 
 public class LoserActivity extends BaseActivity implements AMapLocationListener, GeocodeSearch.OnGeocodeSearchListener {
     public static final int CLASSCHOOSE_CODE = 1024;

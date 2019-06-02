@@ -6,12 +6,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdate;
@@ -35,11 +33,7 @@ import com.amap.api.services.route.DistanceSearch;
 import com.wefind.BaseActivity;
 import com.wefind.R;
 import com.wefind.adatper.LocationAdapter;
-import com.wefind.adatper.SearchResultItemAdapter;
-import com.wefind.context.ClassificationContext;
 import com.wefind.decoration.Divider;
-import com.wefind.decoration.EmptyRecyclerView;
-import com.wefind.javabean.SearchResultBean;
 import com.wefind.utils.LocationUtil;
 
 import java.text.DecimalFormat;

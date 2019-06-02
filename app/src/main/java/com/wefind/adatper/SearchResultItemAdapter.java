@@ -1,29 +1,19 @@
 package com.wefind.adatper;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.wefind.R;
 import com.wefind.activity.SearchResultActivity;
-import com.wefind.javabean.SearchResultBean;
-import com.wefind.javabean.SearchResultBrief;
-import com.wefind.javabean.SearchResultRootBean;
+
 import com.wefind.javabean.ThingItem;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 

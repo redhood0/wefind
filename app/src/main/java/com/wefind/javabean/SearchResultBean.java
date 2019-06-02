@@ -1,7 +1,5 @@
 package com.wefind.javabean;
 
-import java.io.Serializable;
-
 public class SearchResultBean{
     private double score;
 

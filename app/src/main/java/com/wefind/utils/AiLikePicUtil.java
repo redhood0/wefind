@@ -3,18 +3,13 @@ package com.wefind.utils;
 import android.util.Log;
 
 import com.baidu.aip.imagesearch.AipImageSearch;
-import com.wefind.javabean.SearchResultRootBean;
-import com.wefind.javabean.ThingItem;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.HashMap;
 
-import cn.bmob.v3.datatype.BmobFile;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.UploadFileListener;
 
 /**
  * 相似图片查询工具类，调用百度识图接口
