@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
     android:layout_marginTop="5dp"
@@ -22,11 +22,11 @@
         android:id="@+id/tv_find_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:text="寻找走失柴犬，今年一岁半"
         android:textColor="#000000"
-        android:textSize="18dp"
+        android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_find" />
 
@@ -34,7 +34,7 @@
         android:id="@+id/tv_find_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:maxEms="15"
@@ -50,21 +50,20 @@
         android:layout_marginLeft="20dp"
         android:text="赏金：520¥"
         android:textColor="#DC463C"
-        android:textSize="25dp"
+        android:textSize="25sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_find_subtitle" />
 
     <Button
         android:id="@+id/btn_contact_owner"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="5dp"
         android:background="@drawable/find_detail_button_shape"
-        android:padding="10dp"
         android:text="联系失主"
         android:textColor="#ffffff"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_find_subtitle"
         app:layout_constraintRight_toRightOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

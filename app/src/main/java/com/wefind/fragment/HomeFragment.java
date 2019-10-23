@@ -58,10 +58,12 @@ public class HomeFragment extends Fragment {
 
         //todo:动态获取轮播图
         Integer[] images = {R.drawable.lunbo1, R.drawable.lunbo2, R.drawable.lunbo3, R.drawable.lunbo4};
+        String[] title = {"寻找走丢的柴柴宝宝","有没有人找到我的Airpods","我朋友送的雨伞不见了，有没有人见到过","寻找丢失的耳机"};
         Banner banner = v.findViewById(R.id.banner);
         banner.setImageLoader(new GlideImageLoader());
         banner.setImages(Arrays.asList(images));
-        banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
+        banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE);
+        banner.setBannerTitles(Arrays.asList(title));
         banner.setIndicatorGravity(BannerConfig.RIGHT);
         banner.setDelayTime(1500);
         //banner点击事件
