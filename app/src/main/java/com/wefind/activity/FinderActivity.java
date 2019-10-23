@@ -7,6 +7,7 @@ import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.text.LoginFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -18,14 +19,25 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationListener;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeResult;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.FadingCircle;
+import com.google.gson.JsonObject;
 import com.hjq.bar.OnTitleBarListener;
 import com.hjq.bar.TitleBar;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UpProgressHandler;
+import com.qiniu.android.storage.UploadManager;
+import com.qiniu.android.storage.UploadOptions;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.wefind.BaseActivity;
 import com.wefind.R;
@@ -34,10 +46,18 @@ import com.wefind.javabean.ClassChooseBean;
 import com.wefind.javabean.ThingItem;
 import com.wefind.utils.AiLikePicUtil;
 import com.wefind.utils.BmobUtil;
+import com.wefind.utils.LocationUtil;
+import com.wefind.utils.QiNiuUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import javax.security.auth.login.LoginException;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -49,8 +69,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class FinderActivity extends BaseActivity {
+public class FinderActivity extends BaseActivity implements AMapLocationListener, GeocodeSearch.OnGeocodeSearchListener{
     public static final int CLASSCHOOSE_CODE = 1025;
+    public static final int LOCATION_CODE = 256;
     //权限工具
     final RxPermissions rxPermissions = new RxPermissions(this);
 
@@ -98,6 +119,9 @@ public class FinderActivity extends BaseActivity {
         layout_takePhote = findViewById(R.id.layout_takePhote);
         tv_location = findViewById(R.id.tv_location);
         progressBar = findViewById(R.id.skv_loading);
+        //location
+        LocationUtil.setActivityContext(this);
+        LocationUtil.getLocationMsg(this);
         //设置点击事件
         mTitleBar.setOnTitleBarListener(new OnTitleBarListener() {
             @Override
@@ -119,6 +143,14 @@ public class FinderActivity extends BaseActivity {
         consLayout_classChoose.setOnClickListener(n -> jumpToClassChoose());
         //上传事件
         btn_upload.setOnClickListener(n -> bmob4UpdateFile());
+
+        //跳转地图定位
+        tv_location.setOnClickListener(n -> jumpToLocationPage());
+    }
+
+    private void jumpToLocationPage() {
+        Intent intent = new Intent(FinderActivity.this, LocationActivity.class);
+        startActivityForResult(intent, LOCATION_CODE);
     }
 
     // 进入相册
@@ -184,8 +216,6 @@ public class FinderActivity extends BaseActivity {
 
     //通过bmob的api上传图片文件
     public void bmob4UpdateFile() {
-        //弹loading动画
-        showLoading();
         //获取名称
         String name = et_findName.getText().toString();
         //获取描述
@@ -195,8 +225,7 @@ public class FinderActivity extends BaseActivity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM.dd HH:mm");// HH:mm:ss
         Date date = new Date(System.currentTimeMillis());
         String time = simpleDateFormat.format(date);
-        //获取分类
-        String typeCode = classChooseBean.getTypeCode();
+
         //非空判断
         if (TextUtils.isEmpty(imageCompressFilePath)) {
             Toast.makeText(this, "照片不能为空", Toast.LENGTH_SHORT).show();
@@ -208,6 +237,10 @@ public class FinderActivity extends BaseActivity {
             Toast.makeText(this, "类型不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
+        //获取分类
+        String typeCode = classChooseBean.getTypeCode();
+        //弹loading动画
+        showLoading();
         ThingItem ti = new ThingItem(name, describe, null, "1234", 1, time, place, typeCode);
         //----------
         //获取照片
@@ -216,7 +249,38 @@ public class FinderActivity extends BaseActivity {
         Bmob.initialize(this, "cf13d0a4f1a3b2f067ff3cfb19efc717");
         BmobUtil<ThingItem> bmobUtil = new BmobUtil();
         bmobUtil.setActivity(this);
-        bmobUtil.add1Pic(imgPath, ti);
+
+//        bmobUtil.addThingItem();
+//        bmobUtil.add1Pic(imgPath, ti);
+        //todo：七牛云上传
+        QiNiuUtil.createManager();
+        UploadManager uploadManager = QiNiuUtil.uploadManager;
+
+        uploadManager.put(new File(imgPath), null, QiNiuUtil.createToken(),
+                new UpCompletionHandler() {
+                    @Override
+                    public void complete(String key, ResponseInfo info, JSONObject res) {
+                        //res包含hash、key等信息，具体字段取决于上传策略的设置
+                        if(info.isOK()) {
+                            Log.i("qiniu", "Upload Success");
+
+                        } else {
+                            Log.e("qiniu", "Upload Fail");
+                            return;
+                            //如果失败，这里可以把info信息上报自己的服务器，便于后面分析上传错误原因
+                        }
+                        try {
+                            String _url = (String) res.get("key");
+                            ti.setPicurl("http://pzt08kkyj.bkt.clouddn.com/" + _url);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        bmobUtil.addThingItem(ti);
+//                        Log.i("qiniu", key + ",\r\n " + info + ",\r\n " + res);
+                        deleteLoading();
+                        Toast.makeText(FinderActivity.this, "提交成功", Toast.LENGTH_SHORT).show();
+                    }
+                }, null);
     }
 
     @Override
@@ -257,6 +321,10 @@ public class FinderActivity extends BaseActivity {
             tv_classChoose.setText(classChooseBean.getClassName());
             tv_classChoose.setTextColor(ContextCompat.getColor(this, R.color.black));
         }
+        if (requestCode == LOCATION_CODE && resultCode == LocationActivity.LOCATION_CHOOSE_CODE) {
+            String address = data.getStringExtra("address");
+            tv_location.setText(address);
+        }
         //接受照相机返回的值
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
@@ -280,4 +348,32 @@ public class FinderActivity extends BaseActivity {
         progressBar.setVisibility(View.INVISIBLE);
     }
 
+    @Override
+    public void onLocationChanged(AMapLocation aMapLocation) {
+        if (aMapLocation != null) {
+            if (aMapLocation.getErrorCode() == 0) {
+                //可在其中解析amapLocation获取相应内容。
+                aMapLocation.getAddress();
+
+                Log.d("Location", "aMapLocation.getAddress(): " + aMapLocation.getAddress() + "," + aMapLocation.getLatitude());
+                tv_location.setText(aMapLocation.getAddress());
+                LocationUtil.mLocationClient.stopLocation();//停止定位后，本地定位服务并不会被销毁
+            } else {
+                //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                Log.e("AmapError", "location Error, ErrCode:"
+                        + aMapLocation.getErrorCode() + ", errInfo:"
+                        + aMapLocation.getErrorInfo());
+            }
+        }
+    }
+
+    @Override
+    public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
+
+    }
+
+    @Override
+    public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
+
+    }
 }

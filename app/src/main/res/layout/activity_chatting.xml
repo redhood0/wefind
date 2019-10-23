@@ -75,7 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="#fff"
+        android:background="#FFFFFF"
         android:padding="13dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -93,7 +93,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginStart="54dp"
-            android:background="@null"
+            android:background="#F7F7F7"
             android:hint="请输入内容"
             android:textColor="#999999"
             android:textSize="16dp"
