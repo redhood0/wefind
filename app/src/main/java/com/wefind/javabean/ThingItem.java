@@ -18,10 +18,10 @@ public class ThingItem extends BmobObject implements Serializable {
     private String typeCode;
 
     public ThingItem() {
+
     }
 
     public ThingItem(String thingName, String describe, String picurl, String userId, int state, String addTime, String place, String typeCode) {
-
         this.thingName = thingName;
         this.describe = describe;
         this.picurl = picurl;

@@ -1,9 +1,11 @@
 package com.wefind.adatper;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.amap.api.services.help.Tip;
@@ -23,6 +25,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.VH>{
     public static class VH extends RecyclerView.ViewHolder{
         public final TextView tv_placename;
         public final TextView tv_street;
+
 
         public VH(View v) {
             super(v);
@@ -68,6 +71,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.VH>{
                 Log.d("RECYCLER-", "onClick: ===" + t.getAdcode()+t.getDistrict()+t.getPoint());
             }
         });
+
     }
 
     @Override

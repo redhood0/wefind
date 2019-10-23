@@ -57,7 +57,7 @@ public class SearchResultActivity extends BaseActivity {
         //创建默认垂直布局管理器
         mLayoutManager = new LinearLayoutManager(this);
         //创建适配器
-        mAdapter = new SearchResultItemAdapter(beans);
+        mAdapter = new SearchResultItemAdapter(this,beans);
         //获取recyclerView组件
         mRecyclerView = (EmptyRecyclerView) findViewById(R.id.my_recycler_view);
         // 设置布局管理器

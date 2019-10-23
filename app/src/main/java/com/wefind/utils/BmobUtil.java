@@ -1,7 +1,9 @@
 package com.wefind.utils;
 
+import android.app.Activity;
 import android.util.Log;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.wefind.BaseActivity;
 import com.wefind.javabean.Person;
 import com.wefind.javabean.ThingItem;
@@ -10,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobFile;
@@ -25,6 +28,12 @@ public class BmobUtil<T extends BmobObject> {
 
     public void setActivity(BaseActivity act) {
         activity = act;
+    }
+
+    public void bombInit(BaseActivity activity){
+        Bmob.initialize(activity, "cf13d0a4f1a3b2f067ff3cfb19efc717");
+        BmobUtil<ThingItem> bmobUtil = new BmobUtil();
+        bmobUtil.setActivity(activity);
     }
 
     public void addMsg(T t) {
@@ -145,6 +154,30 @@ public class BmobUtil<T extends BmobObject> {
             }
         });
     }
+
+    //todo:通过用户id查出thingitem列表，默认先后顺序
+    public void getThingItemByUid(String uid,int state){
+        BmobQuery<ThingItem> query = new BmobQuery<>();
+        query.addWhereEqualTo("userId",uid);
+        query.addWhereEqualTo("state",state);
+        query.order("-createdAt")
+                .findObjects(new FindListener<ThingItem>() {
+                    @Override
+                    public void done(List<ThingItem> object, BmobException e) {
+                        if (e == null) {
+                            // ...
+                            Log.e("sssss", "done: "+ object.size());
+                            for(ThingItem t : object){
+                                Log.e("sssss", "done: "+ t);
+                            }
+                        } else {
+                            // ...
+                            Log.e("sssss", "undone: " );
+                        }
+                    }
+                });
+    }
+
 
     private void logd(String s) {
         Log.d("BMOB", s);

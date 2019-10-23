@@ -7,8 +7,11 @@ import android.view.View;
 
 import com.wefind.BaseActivity;
 import com.wefind.R;
+import com.wefind.javabean.ThingItem;
+import com.wefind.utils.BmobUtil;
 
 import androidx.annotation.Nullable;
+import cn.bmob.v3.Bmob;
 
 public class HuntingActivity extends BaseActivity {
     @Override
@@ -20,5 +23,7 @@ public class HuntingActivity extends BaseActivity {
             getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
         setContentView(R.layout.hunting);
+
+
     }
 }

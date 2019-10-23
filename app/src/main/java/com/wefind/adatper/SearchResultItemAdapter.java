@@ -1,15 +1,19 @@
 package com.wefind.adatper;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.wefind.R;
+import com.wefind.activity.ChattingActivity;
 import com.wefind.activity.SearchResultActivity;
 
 import com.wefind.javabean.ThingItem;
@@ -21,7 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SearchResultItemAdapter extends RecyclerView.Adapter<SearchResultItemAdapter.VH> {
-
+    Activity activity;
     //创建ViewHolder
     public static class VH extends RecyclerView.ViewHolder{
         public final TextView tv_thing_name;
@@ -29,6 +33,7 @@ public class SearchResultItemAdapter extends RecyclerView.Adapter<SearchResultIt
         public final TextView tv_place;
         public final TextView tv_findtime;
         public final ImageView iv_lostPic;
+        public final Button btn_contect;
         public VH(View v) {
             super(v);
             tv_thing_name = v.findViewById(R.id.tv_thing_name);
@@ -36,11 +41,13 @@ public class SearchResultItemAdapter extends RecyclerView.Adapter<SearchResultIt
             tv_place = v.findViewById(R.id.tv_place);
             tv_findtime = v.findViewById(R.id.tv_findtime);
             iv_lostPic = v.findViewById(R.id.iv_lostPic);
+            btn_contect = v.findViewById(R.id.btn_contect);
         }
     }
 
     private List<ThingItem> datas;
-    public SearchResultItemAdapter(List<ThingItem> data) {
+    public SearchResultItemAdapter(Activity activity ,List<ThingItem> data) {
+        this.activity = activity;
         this.datas = data;
     }
 
@@ -69,6 +76,7 @@ public class SearchResultItemAdapter extends RecyclerView.Adapter<SearchResultIt
 //
 //        Glide.with(context).load(bytes).into(imageView);
         Glide.with(SearchResultActivity.searchResultActivity)
+                //.placeholder(R.drawable.lunbo1)
                 .load(thingItem.getPicurl())
                 .into(holder.iv_lostPic);
         //监听事件
@@ -79,6 +87,12 @@ public class SearchResultItemAdapter extends RecyclerView.Adapter<SearchResultIt
                 Log.d("RECYCLER-", "onClick: ===" + position);
                 //item 点击事件
             }
+        });
+
+        holder.btn_contect.setOnClickListener(v ->{
+            Intent intent = new Intent(activity, ChattingActivity.class);
+            activity.startActivity(intent);
+            activity.finish();
         });
     }
 
