@@ -83,6 +83,12 @@
         <activity
             android:name=".activity.TestHomeActivity"
             android:launchMode="singleTop"></activity>
+        <activity
+            android:name=".activity.ChattingActivity"
+            android:launchMode="singleTop"></activity>
+        <activity
+            android:name=".activity.FindDetailActivity"
+            android:launchMode="singleTop"></activity>
         <service android:name="com.amap.api.location.APSService"></service>
         <meta-data
             android:name="com.amap.api.v2.apikey"
