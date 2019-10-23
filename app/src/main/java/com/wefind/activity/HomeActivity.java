@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.fragment.app.Fragment;
+
+import cn.bmob.v3.Bmob;
 import io.reactivex.functions.Consumer;
 
 public class HomeActivity extends BaseActivity {
@@ -45,6 +47,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bmob.initialize(this, "cf13d0a4f1a3b2f067ff3cfb19efc717");
         homeActivity = this;
         //设置状态栏透明和颜色亮色
         if (Build.VERSION.SDK_INT >= 21) {

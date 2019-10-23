@@ -154,9 +154,9 @@ public class BmobUtil<T extends BmobObject> {
             }
         });
     }
-
     //todo:通过用户id查出thingitem列表，默认先后顺序
     public void getThingItemByUid(String uid,int state){
+
         BmobQuery<ThingItem> query = new BmobQuery<>();
         query.addWhereEqualTo("userId",uid);
         query.addWhereEqualTo("state",state);
@@ -165,6 +165,9 @@ public class BmobUtil<T extends BmobObject> {
                     @Override
                     public void done(List<ThingItem> object, BmobException e) {
                         if (e == null) {
+
+                            activity.noticeFromBmob((ArrayList<ThingItem>) object);
+                            //list = object;
                             // ...
                             Log.e("sssss", "done: "+ object.size());
                             for(ThingItem t : object){

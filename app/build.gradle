@@ -61,7 +61,7 @@ dependencies {
     //navigationView
     implementation 'com.youth.banner:banner:1.4.10'
     //banner
-    //implementation 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation 'com.amap.api:map2d:latest.integration'
     implementation 'com.amap.api:navi-3dmap:latest.integration'
@@ -78,7 +78,8 @@ dependencies {
     implementation 'com.qiniu:qiniu-android-sdk:7.4.0'
     implementation 'com.qiniu:qiniu-java-sdk:7.2.27'
     //qiniuyun
-
+    implementation 'com.github.Theophrast:SquareImageView:1.0.1'
+    implementation 'androidx.cardview:cardview:1.0.0'
 
 
 }
